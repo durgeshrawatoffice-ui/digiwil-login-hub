@@ -149,6 +149,14 @@ function setupClientEvents(waClient) {
         setTimeout(() => restartClient(), 5000);
     });
 
+    waClient.on('loading_screen', (percent, message) => {
+        console.log(`⏳ LOADING SCREEN: ${percent}% - ${message}`);
+    });
+
+    waClient.on('change_state', state => {
+        console.log(`🔄 STATE CHANGED: ${state}`);
+    });
+
     // Disconnected
     waClient.on('disconnected', async (reason) => {
         console.log('❌ Client disconnected:', reason);
