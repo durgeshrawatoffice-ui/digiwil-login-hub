@@ -62,10 +62,10 @@ function createClient() {
                 '--disable-software-rasterizer',
             ]
         },
-        // Use local file cache for WhatsApp Web version — most stable option
+        // Use stable WA Web version from wppconnect-team to fix QR scan loop
         webVersionCache: {
-            type: 'local',
-            path: path.join(wwebCachePath, 'wwebVersion.json')
+            type: 'remote',
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
         },
         // Give plenty of time for auth to complete
         authTimeoutMs: 0, // 0 = no timeout
