@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: whatsapp-service
+    runtime: docker
+    rootDir: whatsapp-service
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3001
+    healthCheckPath: /api/health
+    plan: starter
