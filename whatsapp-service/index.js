@@ -35,6 +35,7 @@ let keepAliveIntervalId = null;
 
 /**
  * Creates a fresh WhatsApp Client instance
+ * CRITICAL: Do NOT use --single-process or --no-zygote — they break WhatsApp auth flow
  */
 function createClient() {
     return new Client({
@@ -50,19 +51,21 @@ function createClient() {
                 '--disable-dev-shm-usage',
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
-                '--no-zygote',
-                '--single-process',
                 '--disable-gpu',
                 '--disable-extensions',
                 '--disable-software-rasterizer',
-                '--disable-background-timer-throttling',
-                '--disable-backgrounding-occluded-windows',
-                '--disable-renderer-backgrounding'
             ]
         },
-        // Increase timeouts so client doesn't give up on slow restore
-        authTimeoutMs: 120000,
-        qrMaxRetries: 10,
+        // Use cached WhatsApp Web version to prevent version mismatch issues
+        webVersionCache: {
+            type: 'remote',
+            remotePath: 'https://raw.githubusercontent.com/AiWorldPedia/whatsapp-web-versions/master/cache/wwebjs/wwebVersion_2.3000.1020125325-alpha.json'
+        },
+        // Give plenty of time for auth to complete
+        authTimeoutMs: 0, // 0 = no timeout
+        qrMaxRetries: 5,
+        takeoverOnConflict: true,
+        takeoverTimeoutMs: 0,
     });
 }
 

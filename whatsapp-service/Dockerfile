@@ -53,6 +53,10 @@ COPY . .
 # Create directory for WhatsApp session persistence
 RUN mkdir -p /app/.wwebjs_auth && chmod -R 777 /app/.wwebjs_auth
 
+# Chromium multi-process needs more shared memory than Docker's default 64MB
+# Mount tmpfs at /dev/shm with 1GB
+RUN mkdir -p /dev/shm && mount -t tmpfs -o size=1g tmpfs /dev/shm 2>/dev/null || true
+
 EXPOSE 3001
 
 ENV PORT=3001
