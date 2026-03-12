@@ -38,6 +38,12 @@ let keepAliveIntervalId = null;
  * CRITICAL: Do NOT use --single-process or --no-zygote — they break WhatsApp auth flow
  */
 function createClient() {
+    // Use local file-based cache for WhatsApp Web version (most reliable)
+    const wwebCachePath = path.join(__dirname, '.wwebjs_cache');
+    if (!fs.existsSync(wwebCachePath)) {
+        fs.mkdirSync(wwebCachePath, { recursive: true });
+    }
+
     return new Client({
         authStrategy: new LocalAuth({
             dataPath: SESSION_DATA_PATH
@@ -56,10 +62,10 @@ function createClient() {
                 '--disable-software-rasterizer',
             ]
         },
-        // Use cached WhatsApp Web version to prevent version mismatch issues
+        // Use local file cache for WhatsApp Web version — most stable option
         webVersionCache: {
-            type: 'remote',
-            remotePath: 'https://raw.githubusercontent.com/AiWorldPedia/whatsapp-web-versions/master/cache/wwebjs/wwebVersion_2.3000.1020125325-alpha.json'
+            type: 'local',
+            path: path.join(wwebCachePath, 'wwebVersion.json')
         },
         // Give plenty of time for auth to complete
         authTimeoutMs: 0, // 0 = no timeout
