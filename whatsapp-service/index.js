@@ -76,10 +76,11 @@ function createClient() {
                 '--disable-features=IsolateOrigins,site-per-process'
             ]
         },
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        // Disable cache entirely to force a clean download of WA Web avoiding version mismatch loops
+        // Use default local cache (v1.34.6 handles WhatsApp Web versions correctly)
+        // DO NOT override User-Agent! WhatsApp checks for Engine/UA mismatch and will force-refresh the page if manipulated.
         webVersionCache: {
-            type: 'none'
+            type: 'local',
+            path: path.join(__dirname, '.wwebjs_cache')
         },
         // Give plenty of time for auth to complete
         authTimeoutMs: 0, // 0 = no timeout
