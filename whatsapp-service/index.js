@@ -15,6 +15,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// In-memory log buffer for remote debugging on Render
+const logBuffer = [];
+function addLog(type, args) {
+    const msg = `[${new Date().toISOString()}] [${type}] ` + Array.from(args).join(' ');
+    logBuffer.push(msg);
+    if (logBuffer.length > 200) logBuffer.shift();
+}
+const originalLog = console.log;
+const originalError = console.error;
+console.log = function () { addLog('INFO', arguments); originalLog.apply(console, arguments); };
+console.error = function () { addLog('ERROR', arguments); originalError.apply(console, arguments); };
+
 const port = process.env.PORT || 3001;
 
 // Determine session directory based on environment
@@ -407,6 +419,10 @@ async function startServer() {
         console.log(`   POST /api/logout         — Logout session`);
         console.log(`   POST /api/restart        — Restart client`);
         console.log(`   POST /api/backup-session — Force backup session\n`);
+    });
+
+    app.get('/api/logs', (req, res) => {
+        res.json(logBuffer);
     });
 
     // Start the self-ping keep-alive (prevents Render from sleeping)
