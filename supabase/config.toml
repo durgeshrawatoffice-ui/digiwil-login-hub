@@ -1,0 +1,13 @@
+project_id = "rvfblopdvbowyehukicr"
+
+[functions.detect-school-website]
+verify_jwt = false
+
+[functions.validate-domain]
+verify_jwt = false
+
+[functions.scrape-google-maps]
+verify_jwt = false
+
+[functions.scrape-website-details]
+verify_jwt = false
