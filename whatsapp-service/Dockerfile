@@ -44,12 +44,8 @@ WORKDIR /app
 # Copy package files first for better Docker layer caching
 COPY package.json package-lock.json ./
 
-# Install ALL dependencies (not just production — some peer deps are needed)
-RUN npm install && \
-    echo "=== Installed packages ===" && \
-    ls node_modules | head -30 && \
-    echo "whatsapp-web.js check:" && \
-    ls node_modules/whatsapp-web.js/package.json
+# Install dependencies
+RUN npm install
 
 # Copy application code
 COPY . .
