@@ -11,8 +11,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.99.1",
+    "archiver": "^7.0.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "extract-zip": "^2.0.1",
     "qrcode-terminal": "^0.12.0",
     "whatsapp-web.js": "^1.34.6"
   }

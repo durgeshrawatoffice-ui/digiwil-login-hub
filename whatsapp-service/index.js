@@ -2,6 +2,12 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const express = require('express');
 const cors = require('cors');
+const {
+    restoreSessionFromDb,
+    backupSessionToDb,
+    startBackupJob,
+    deleteSessionFromDb
+} = require('./session-sync');
 
 const app = express();
 app.use(cors());
@@ -59,10 +65,18 @@ client.on('ready', () => {
     } catch (e) {
         clientInfo = null;
     }
+
+    // Backup session to DB immediately upon successful connect
+    backupSessionToDb();
+
+    // Start periodic backup every 15 minutes
+    startBackupJob(15);
 });
 
 client.on('authenticated', () => {
     console.log('✅ Authenticated successfully');
+    // Also backup session on successful authentication
+    backupSessionToDb();
 });
 
 client.on('auth_failure', (msg) => {
@@ -79,7 +93,7 @@ client.on('disconnected', (reason) => {
     // Attempt to reconnect
     setTimeout(() => {
         console.log('🔄 Attempting to reconnect...');
-        client.initialize();
+        initializeClient();
     }, 5000);
 });
 
@@ -90,8 +104,10 @@ client.on('message', async (msg) => {
     }
 });
 
-// Initialize the client
-client.initialize();
+// Function to initialize the client
+function initializeClient() {
+    client.initialize();
+}
 
 /**
  * =================== EXPRESS API ROUTES ===================
@@ -221,6 +237,7 @@ app.post('/api/logout', async (req, res) => {
         isReady = false;
         clientInfo = null;
         qrData = null;
+        deleteSessionFromDb(); // Delete session from DB on logout
         res.json({ success: true, message: 'Logged out. Scan QR again to reconnect.' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -235,20 +252,29 @@ app.post('/api/restart', async (req, res) => {
         clientInfo = null;
         qrData = null;
         lastError = null;
-        client.initialize();
+        initializeClient();
         res.json({ success: true, message: 'Client restarting. Fetch /api/status for QR code.' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Start Express
-app.listen(port, () => {
-    console.log(`\n🚀 WhatsApp API Service running on port ${port}`);
-    console.log(`   GET  /api/health       — Health check`);
-    console.log(`   GET  /api/status       — Connection status & QR code`);
-    console.log(`   POST /api/send-message — Send a single message`);
-    console.log(`   POST /api/send-bulk    — Send bulk messages`);
-    console.log(`   POST /api/logout       — Logout session`);
-    console.log(`   POST /api/restart      — Restart client\n`);
-});
+// --- START SERVER ---
+async function startServer() {
+    console.log('📥 Restoring remote session if exists...');
+    await restoreSessionFromDb();
+
+    initializeClient();
+
+    app.listen(port, () => {
+        console.log(`\n🚀 WhatsApp API Service running on port ${port}`);
+        console.log(`   GET  /api/health       — Health check`);
+        console.log(`   GET  /api/status       — Connection status & QR code`);
+        console.log(`   POST /api/send-message — Send a single message`);
+        console.log(`   POST /api/send-bulk    — Send bulk messages`);
+        console.log(`   POST /api/logout       — Logout session`);
+        console.log(`   POST /api/restart      — Restart client\n`);
+    });
+}
+
+startServer();
