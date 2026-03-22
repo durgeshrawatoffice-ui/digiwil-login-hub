@@ -59,6 +59,13 @@ const Index = () => {
     return !localStorage.getItem("leadradar_onboarded");
   });
 
+  // Redirect team members to /team
+  useEffect(() => {
+    if (!roleLoading && role === "team_member") {
+      navigate("/team", { replace: true });
+    }
+  }, [role, roleLoading, navigate]);
+
   if (showOnboarding) {
     return <OnboardingWizard onComplete={() => setShowOnboarding(false)} />;
   }
