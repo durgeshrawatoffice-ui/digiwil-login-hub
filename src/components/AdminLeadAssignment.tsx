@@ -39,7 +39,7 @@ export function AdminLeadAssignment({ schools, onAssignLead }: AdminLeadAssignme
   const loadMembers = async () => {
     const { data } = await (supabase as any)
       .from('team_members')
-      .select('id, member_email, member_name, role')
+      .select('id, member_email, member_name, member_user_id, role')
       .order('invited_at', { ascending: true });
     if (data) setMembers(data);
   };
