@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSchools } from "@/hooks/use-schools";
+import { useUserRole } from "@/hooks/use-user-role";
 import { StatsCards } from "@/components/StatsCards";
 import { LeadChart } from "@/components/LeadChart";
 import { SchoolImport } from "@/components/SchoolImport";
@@ -11,6 +13,8 @@ import { OutreachTemplates } from "@/components/OutreachTemplates";
 import { GoogleMapsScraper } from "@/components/GoogleMapsScraper";
 import { WebsiteScraper } from "@/components/WebsiteScraper";
 import { TeamManagement } from "@/components/TeamManagement";
+import { AdminLeadAssignment } from "@/components/AdminLeadAssignment";
+import { PerformanceLeaderboard } from "@/components/PerformanceLeaderboard";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { ReportsDashboard } from "@/components/ReportsDashboard";
 import { ExportDialog } from "@/components/ExportDialog";
