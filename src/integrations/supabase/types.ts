@@ -173,6 +173,56 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_assignments: {
+        Row: {
+          assigned_by: string
+          assigned_to: string
+          created_at: string
+          due_date: string | null
+          id: string
+          notes: string | null
+          priority: string
+          progress_percentage: number
+          school_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_by: string
+          assigned_to: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          progress_percentage?: number
+          school_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_by?: string
+          assigned_to?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          progress_percentage?: number
+          school_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_assignments_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nurture_sequences: {
         Row: {
           channel: string
@@ -249,6 +299,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          role: string
           updated_at: string
         }
         Insert: {
@@ -257,6 +308,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          role?: string
           updated_at?: string
         }
         Update: {
@@ -265,6 +317,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          role?: string
           updated_at?: string
         }
         Relationships: []
@@ -277,7 +330,8 @@ export type Database = {
           call_notes: string | null
           call_status: string | null
           category: string | null
-          created_at: string
+          company_id: string | null
+          created_at: string | null
           detected_website: string | null
           discovered: boolean | null
           domain_active: boolean | null
@@ -306,8 +360,8 @@ export type Database = {
           trust_reason: string | null
           trust_score: number | null
           twitter: string | null
-          updated_at: string
-          user_id: string
+          updated_at: string | null
+          user_id: string | null
           website: string | null
           website_confirmed: boolean | null
           website_type: string | null
@@ -319,7 +373,8 @@ export type Database = {
           call_notes?: string | null
           call_status?: string | null
           category?: string | null
-          created_at?: string
+          company_id?: string | null
+          created_at?: string | null
           detected_website?: string | null
           discovered?: boolean | null
           domain_active?: boolean | null
@@ -348,8 +403,8 @@ export type Database = {
           trust_reason?: string | null
           trust_score?: number | null
           twitter?: string | null
-          updated_at?: string
-          user_id: string
+          updated_at?: string | null
+          user_id?: string | null
           website?: string | null
           website_confirmed?: boolean | null
           website_type?: string | null
@@ -361,7 +416,8 @@ export type Database = {
           call_notes?: string | null
           call_status?: string | null
           category?: string | null
-          created_at?: string
+          company_id?: string | null
+          created_at?: string | null
           detected_website?: string | null
           discovered?: boolean | null
           domain_active?: boolean | null
@@ -390,8 +446,8 @@ export type Database = {
           trust_reason?: string | null
           trust_score?: number | null
           twitter?: string | null
-          updated_at?: string
-          user_id?: string
+          updated_at?: string | null
+          user_id?: string | null
           website?: string | null
           website_confirmed?: boolean | null
           website_type?: string | null
@@ -490,30 +546,69 @@ export type Database = {
       team_members: {
         Row: {
           accepted: boolean | null
+          company_id: string | null
           id: string
           invited_at: string
+          is_active: boolean | null
+          last_login: string | null
           member_email: string
           member_name: string | null
+          member_user_id: string | null
           owner_id: string
+          permissions: Json | null
           role: string
         }
         Insert: {
           accepted?: boolean | null
+          company_id?: string | null
           id?: string
           invited_at?: string
+          is_active?: boolean | null
+          last_login?: string | null
           member_email: string
           member_name?: string | null
+          member_user_id?: string | null
           owner_id: string
+          permissions?: Json | null
           role?: string
         }
         Update: {
           accepted?: boolean | null
+          company_id?: string | null
           id?: string
           invited_at?: string
+          is_active?: boolean | null
+          last_login?: string | null
           member_email?: string
           member_name?: string | null
+          member_user_id?: string | null
           owner_id?: string
+          permissions?: Json | null
           role?: string
+        }
+        Relationships: []
+      }
+      whatsapp_sessions: {
+        Row: {
+          created_at: string | null
+          id: string
+          session_data: string
+          session_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          session_data: string
+          session_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          session_data?: string
+          session_name?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
