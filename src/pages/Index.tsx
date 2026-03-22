@@ -173,7 +173,13 @@ const Index = () => {
       case "outreach":
         return <OutreachTemplates schools={schools} />;
       case "team":
-        return <TeamManagement schools={schools} onAssignLead={assignLead} />;
+        return (
+          <div className="space-y-6">
+            <TeamManagement schools={schools} onAssignLead={assignLead} />
+            <AdminLeadAssignment schools={schools} onAssignLead={assignLead} />
+            <PerformanceLeaderboard schools={schools} />
+          </div>
+        );
       case "scraper":
         return <GoogleMapsScraper onImportLeads={addSchools} />;
       case "website-scraper":
