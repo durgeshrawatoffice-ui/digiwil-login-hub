@@ -15,6 +15,7 @@ interface TeamMember {
   id: string;
   member_email: string;
   member_name: string | null;
+  member_user_id: string | null;
   role: string;
 }
 
