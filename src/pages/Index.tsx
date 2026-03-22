@@ -42,6 +42,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ShieldCheck, Loader2, Download, FileDown } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { role, loading: roleLoading } = useUserRole();
   const {
     schools, stats, processing, processProgress, validating, validateProgress,
     needsValidationCount, addSchools, processSchools, validateDomains,
