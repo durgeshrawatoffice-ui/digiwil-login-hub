@@ -9,16 +9,25 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
+  const redirectByRole = async (userId: string) => {
+    const { data } = await supabase.rpc('get_user_role', { _user_id: userId });
+    if (data === 'team_member') {
+      navigate("/team", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
-        navigate("/", { replace: true });
+        await redirectByRole(session.user.id);
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        navigate("/", { replace: true });
+        await redirectByRole(session.user.id);
       }
       setLoading(false);
     });

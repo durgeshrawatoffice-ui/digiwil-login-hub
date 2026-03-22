@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSchools } from "@/hooks/use-schools";
+import { useUserRole } from "@/hooks/use-user-role";
 import { StatsCards } from "@/components/StatsCards";
 import { LeadChart } from "@/components/LeadChart";
 import { SchoolImport } from "@/components/SchoolImport";
@@ -11,6 +13,8 @@ import { OutreachTemplates } from "@/components/OutreachTemplates";
 import { GoogleMapsScraper } from "@/components/GoogleMapsScraper";
 import { WebsiteScraper } from "@/components/WebsiteScraper";
 import { TeamManagement } from "@/components/TeamManagement";
+import { AdminLeadAssignment } from "@/components/AdminLeadAssignment";
+import { PerformanceLeaderboard } from "@/components/PerformanceLeaderboard";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { ReportsDashboard } from "@/components/ReportsDashboard";
 import { ExportDialog } from "@/components/ExportDialog";
@@ -38,6 +42,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ShieldCheck, Loader2, Download, FileDown } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { role, loading: roleLoading } = useUserRole();
   const {
     schools, stats, processing, processProgress, validating, validateProgress,
     needsValidationCount, addSchools, processSchools, validateDomains,
@@ -52,6 +58,13 @@ const Index = () => {
   const [showOnboarding, setShowOnboarding] = useState(() => {
     return !localStorage.getItem("leadradar_onboarded");
   });
+
+  // Redirect team members to /team
+  useEffect(() => {
+    if (!roleLoading && role === "team_member") {
+      navigate("/team", { replace: true });
+    }
+  }, [role, roleLoading, navigate]);
 
   if (showOnboarding) {
     return <OnboardingWizard onComplete={() => setShowOnboarding(false)} />;
@@ -160,7 +173,13 @@ const Index = () => {
       case "outreach":
         return <OutreachTemplates schools={schools} />;
       case "team":
-        return <TeamManagement schools={schools} onAssignLead={assignLead} />;
+        return (
+          <div className="space-y-6">
+            <TeamManagement schools={schools} onAssignLead={assignLead} />
+            <AdminLeadAssignment schools={schools} onAssignLead={assignLead} />
+            <PerformanceLeaderboard schools={schools} />
+          </div>
+        );
       case "scraper":
         return <GoogleMapsScraper onImportLeads={addSchools} />;
       case "website-scraper":
