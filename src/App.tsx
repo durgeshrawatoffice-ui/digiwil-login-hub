@@ -13,6 +13,7 @@ const Index = lazy(() => import("./pages/Index"));
 const AuthPage = lazy(() => import("./pages/Auth"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const LeadForm = lazy(() => import("./pages/LeadForm"));
+const TeamDashboard = lazy(() => import("./pages/TeamDashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -68,6 +69,14 @@ const App = () => (
                   element={
                     <PrivateRoute>
                       <Index />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/team"
+                  element={
+                    <PrivateRoute>
+                      <TeamDashboard />
                     </PrivateRoute>
                   }
                 />
